@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import Any, Dict, Optional, Union
+import time
 
 import requests
 
@@ -27,8 +28,15 @@ class Client:
             headers = {}
 
         if api:
-            if not self.oauth2_token or (
-                isinstance(self.oauth2_token, OAuth2Token) and self.oauth2_token.expired
+            # refresh when missing, when OAuth2Token reports expired,
+            # or when a dict token has an expired `expires_at` timestamp
+            if (
+                not self.oauth2_token
+                or (isinstance(self.oauth2_token, OAuth2Token) and self.oauth2_token.expired)
+                or (
+                    isinstance(self.oauth2_token, dict)
+                    and int(time.time()) >= int(self.oauth2_token.get("expires_at", 0))
+                )
             ):
                 self.refresh_oauth2()
 
@@ -36,10 +44,10 @@ class Client:
                 headers["Authorization"] = self.oauth2_token.as_header()
 
         req = requests.Request(method=method, url=f"https://example.com{path}", headers=headers)
-        prepared = self.session.prepare_request(req)
+        prepped = self.session.prepare_request(req)
 
         return {
             "method": method,
             "path": path,
-            "headers": dict(prepared.headers),
-        }
+            "headers": dict(prepped.headers),
+            }

@@ -33,6 +33,25 @@ Update this README to include:
 - how to run the tests locally,
 - how to build and run tests with Docker.
 
+## How to run tests
+
+Run tests locally (recommended Python virtualenv):
+
+
+pip install -r requirements.txt
+pytest -v
+
+
+Build and run tests with Docker:
+
+
+# build image (uses requirements.txt during build)
+docker build -t assignment-tests .
+
+# run tests 
+docker run --rm assignment-tests
+
+
 ### 4) Find + fix a bug (required)
 
 There is a bug somewhere in this repository.
