@@ -45,10 +45,10 @@ pytest -v
 Build and run tests with Docker:
 
 
-# build image (uses requirements.txt during build)
+# Build image (uses requirements.txt during build)
 docker build -t assignment-tests .
 
-# run tests 
+# Run tests 
 docker run --rm assignment-tests
 
 
